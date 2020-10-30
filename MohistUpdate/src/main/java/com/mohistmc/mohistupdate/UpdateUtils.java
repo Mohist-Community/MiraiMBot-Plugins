@@ -49,7 +49,6 @@ public class UpdateUtils {
                 .replace("#time#", time)
                 .replace("#author#", author)
                 .replace("#msg#", message0);
-        MiraiMBotLog.LOGGER.info(sendMsg);
         return sendMsg;
     }
 }

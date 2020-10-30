@@ -25,7 +25,7 @@ public class Main extends MohistPlugin {
         plugin = this;
         version.put("1.12.2", "1.12.2");
         version.put("1.16.3", "debug");
-        version.put("1.7.10", "1.7.10");
+        //version.put("1.7.10", "1.7.10");
         registerCommands(new UpdateCommand());
         JenkinsUpdatePush.start();
         getLogger().info("Debug插件加载成功");
