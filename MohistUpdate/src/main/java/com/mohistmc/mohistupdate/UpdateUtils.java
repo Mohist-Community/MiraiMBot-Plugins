@@ -19,7 +19,12 @@ public class UpdateUtils {
 
     public static String info(String msg) throws IOException {
         MiraiMBotLog.LOGGER.info("开始读取CI数据");
-        URLConnection request = new URL("https://ci.codemc.io/job/Mohist-Community/job/Mohist-" + msg + "/lastSuccessfulBuild/api/json").openConnection();
+        URLConnection request;
+        if (msg.equals("debug")) {
+            request = new URL("https://ci.codemc.io/job/Mohist-Community/job/"+ msg + "/lastSuccessfulBuild/api/json").openConnection();
+        } else {
+            request = new URL("https://ci.codemc.io/job/Mohist-Community/job/Mohist-" + msg + "/lastSuccessfulBuild/api/json").openConnection();
+        }
         request.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
         request.connect();
         MiraiMBotLog.LOGGER.info(((HttpURLConnection) request).getResponseCode());

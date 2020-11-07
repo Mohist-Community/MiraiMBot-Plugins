@@ -21,7 +21,7 @@ public class JenkinsUpdatePush implements Runnable {
     static {
         ver.add("1.12.2");
         ver.add("debug");
-        //ver.add("1.7.10");
+        ver.add("1.7.10");
     }
 
     @Override

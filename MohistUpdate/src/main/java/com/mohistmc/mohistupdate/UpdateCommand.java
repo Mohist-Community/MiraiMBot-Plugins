@@ -5,7 +5,7 @@ import com.mohistmc.miraimbot.cmds.manager.CommandResult;
 import com.mohistmc.miraimbot.cmds.manager.annotations.Command;
 import com.mohistmc.miraimbot.console.log4j.MiraiMBotLog;
 
-@Command(name = "update", usage = "#update")
+@Command(name = "update", alias = {"check"}, usage = "#update")
 public class UpdateCommand implements CommandExecutor {
 
     @Override
