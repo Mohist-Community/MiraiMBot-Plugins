@@ -20,24 +20,20 @@ public class JenkinsUpdatePush implements Runnable {
 
     static {
         ver.add("1.12.2");
-        ver.add("debug");
+        ver.add("1.16.4");
+        ver.add("1.16.3");
         ver.add("1.7.10");
     }
 
     @Override
     public void run() {
         for (String s : ver) {
-            URLConnection request;
             try {
-                if (s.equals("debug")) {
-                    request = new URL("https://ci.codemc.io/job/Mohist-Community/job/"+ s + "/lastSuccessfulBuild/api/json").openConnection();
-                } else {
-                    request = new URL("https://ci.codemc.io/job/Mohist-Community/job/Mohist-" + s + "/lastSuccessfulBuild/api/json").openConnection();
-                }
+                URLConnection request = new URL("https://ci.codemc.io/job/Mohist-Community/job/Mohist-" + s + "/lastSuccessfulBuild/api/json").openConnection();
                 request.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
                 request.connect();
                 JsonElement json = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent()));
-                String number = json.getAsJsonObject().get("number").toString();
+                int number = Integer.parseInt(json.getAsJsonObject().get("number").toString());
 
                 String authorstring = json.getAsJsonObject().get("actions").getAsJsonArray().get(0).getAsJsonObject().get("causes").getAsJsonArray().get(0).getAsJsonObject().get("shortDescription").toString();
                 String[] authors = authorstring.replace("\"", "").split(" ");
@@ -51,11 +47,12 @@ public class JenkinsUpdatePush implements Runnable {
                 String comment = message.replace(message0, "").replace("\\n", "");
 
                 String ymlver = s.replace(".", "-");
+                // 没有缓存时写入
                 if(MiraiMBot.yaml.get("mohist_number." + ymlver) == null) {
                     MiraiMBot.yaml.set("mohist_number." + ymlver, number);
                     MiraiMBot.saveYaml(MiraiMBot.yaml, MiraiMBot.file);
                 }
-                if (!MiraiMBot.yaml.get("mohist_number." + ymlver).equals(number)) {
+                if (MiraiMBot.yaml.getInt("mohist_number." + ymlver) < number) {
                     String sendMsg = "======Mohist更新推送======" + "\n" +
                             "分支: #branche#" + "\n" +
                             "构建号: #number#" + "\n" +
@@ -65,7 +62,7 @@ public class JenkinsUpdatePush implements Runnable {
                     if (comment != null) sendMsg = sendMsg + comment;
                     sendMsg = sendMsg
                             .replace("#branche#", s)
-                            .replace("#number#", number)
+                            .replace("#number#", String.valueOf(number))
                             .replace("#time#", time)
                             .replace("#author#", author)
                             .replace("#msg#", message0);
@@ -82,7 +79,7 @@ public class JenkinsUpdatePush implements Runnable {
 
     public static void start() {
         MiraiMBotLog.LOGGER.info("开始运行更新推送程序");
-        Main.Jenkins_UpdatePush.scheduleAtFixedRate(new JenkinsUpdatePush(), 1000 * 1, 1000 * 30, TimeUnit.MILLISECONDS);
+        Main.Jenkins_UpdatePush.scheduleAtFixedRate(new JenkinsUpdatePush(), 1000 * 1, 1000 * 60, TimeUnit.MILLISECONDS);
     }
 
     public static void stop() {
