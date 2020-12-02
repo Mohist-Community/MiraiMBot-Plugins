@@ -17,6 +17,14 @@ import java.net.URLConnection;
  */
 public class UpdateUtils {
 
+    public static void main(String[] a){
+        try {
+            MiraiMBotLog.LOGGER.info(info("1.16.4"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String info(String msg) throws IOException {
         MiraiMBotLog.LOGGER.info("开始读取CI数据");
         URLConnection request = new URL("https://ci.codemc.io/job/Mohist-Community/job/Mohist-" + msg + "/lastSuccessfulBuild/api/json").openConnection();

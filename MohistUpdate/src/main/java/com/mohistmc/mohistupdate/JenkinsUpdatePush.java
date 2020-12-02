@@ -21,7 +21,6 @@ public class JenkinsUpdatePush implements Runnable {
     static {
         ver.add("1.12.2");
         ver.add("1.16.4");
-        ver.add("1.16.3");
         ver.add("1.7.10");
     }
 
@@ -72,14 +71,14 @@ public class JenkinsUpdatePush implements Runnable {
                     MiraiMBot.saveYaml(MiraiMBot.yaml, MiraiMBot.file);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                MiraiMBotLog.LOGGER.info("更新检测程序发生错误: " + e.getMessage());
             }
         }
     }
 
     public static void start() {
         MiraiMBotLog.LOGGER.info("开始运行更新推送程序");
-        Main.Jenkins_UpdatePush.scheduleAtFixedRate(new JenkinsUpdatePush(), 1000 * 1, 1000 * 60, TimeUnit.MILLISECONDS);
+        Main.Jenkins_UpdatePush.scheduleAtFixedRate(new JenkinsUpdatePush(), 1000 * 1, 1000 * 90, TimeUnit.MILLISECONDS);
     }
 
     public static void stop() {
