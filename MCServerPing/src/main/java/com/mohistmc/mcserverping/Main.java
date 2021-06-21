@@ -1,9 +1,10 @@
 package com.mohistmc.mcserverping;
 
+import com.mohistmc.miraimbot.annotations.Plugin;
+import com.mohistmc.miraimbot.command.CommandManager;
 import com.mohistmc.miraimbot.plugin.MohistPlugin;
-import com.mohistmc.miraimbot.plugin.Plugin;
 
-@Plugin(name = "MCServerPing",version = "0.0.1",authors = {"Mgazul"},description = "查询服务器信息")
+@Plugin(value  = "MCServerPing",version = "0.2",authors = {"Mgazul"},description = "查询服务器信息")
 public class Main extends MohistPlugin {
 
     public static Main plugin;
@@ -16,7 +17,8 @@ public class Main extends MohistPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        registerCommands(new PingCommand());
-        getLogger().info("插件 MCServerPing 加载成功");
+        CommandManager.register(new PingCommand());
+        //saveDefaultConfig();
+        //getLogger().info("插件 MCServerPing 加载成功");
     }
 }

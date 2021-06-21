@@ -1,22 +1,32 @@
 package com.mohistmc.mcserverping;
 
-import com.mohistmc.miraimbot.cmds.manager.CommandExecutor;
-import com.mohistmc.miraimbot.cmds.manager.CommandResult;
-import com.mohistmc.miraimbot.cmds.manager.annotations.Command;
-import com.mohistmc.miraimbot.mcserverping.MinecraftServerPing;
-import com.mohistmc.miraimbot.mcserverping.MinecraftServerPingInfos;
-import com.mohistmc.miraimbot.mcserverping.MinecraftServerPingOptions;
+import com.mohistmc.miraimbot.annotations.Command;
+import com.mohistmc.miraimbot.command.CommandExecutor;
+import com.mohistmc.miraimbot.command.CommandResult;
+import com.mohistmc.miraimbot.minecraft.mcserverping.MinecraftServerPing;
+import com.mohistmc.miraimbot.minecraft.mcserverping.MinecraftServerPingInfos;
+import com.mohistmc.miraimbot.minecraft.mcserverping.MinecraftServerPingOptions;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 
-@Command(name = "ping", description = "查询服务器信息", alias = {"c", "查服", "motd"}, usage = "#ping [ip:端口]")
-public class PingCommand implements CommandExecutor {
+@Command("ping")
+public class PingCommand extends CommandExecutor {
+
+    public PingCommand(){
+        super.label = "ping";
+        super.usage = "ping ip:端口";
+        super.description = "";
+        super.noshow = false;
+        super.opCan = false;
+        super.onlyOp = false;
+        super.permissionEnable = false;
+        super.permission = "";
+        super.type = Command.Type.ALL;
+    }
 
     @Override
     public boolean onCommand(CommandResult result) {
         if (result.getArgs().size() <= 0) {
-            result.sendMessage("======使用检测======\n请输入IP, 格式> ip:端口");
+            result.sendMessageOrGroup("======使用检测======\n请输入IP, 格式> ip:端口");
             return true;
         } else {
             String msg = result.getArgs().get(0);
@@ -34,7 +44,7 @@ public class PingCommand implements CommandExecutor {
             try {
                 reply = new MinecraftServerPing().getPing(options);
             } catch (IOException ex) {
-                result.sendMessage(options.getHostname() + ":" + options.getPort() + " 无法访问.");
+                result.sendMessageOrGroup(options.getHostname() + ":" + options.getPort() + " 无法访问.");
                 return true;
             }
 
@@ -47,14 +57,9 @@ public class PingCommand implements CommandExecutor {
             sb.append("版本: " + version.getName()).append("\n");
             sb.append("协议号: " + version.getProtocol()).append("\n");
 
-            result.sendMessage(sb.toString());
+            result.sendMessageOrGroup(sb.toString());
             // String.format("图标: %s", reply.getFavicon())
         }
-        return true;
-    }
-
-    public static void main(String[] args) throws IOException {
-        MinecraftServerPingInfos data = new MinecraftServerPing().getPing(new MinecraftServerPingOptions().setHostname("12.mgazul.cn").setPort(25565));
-        System.out.println(data.getStrippedDescription() + "\n" + data.getVersion().getName() + "\n" + data.getLatency() + "ms\n" + data.getPlayers().getOnline() + "/" + data.getPlayers().getMax());
+        return false;
     }
 }
