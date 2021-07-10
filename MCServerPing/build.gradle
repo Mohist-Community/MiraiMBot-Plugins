@@ -16,10 +16,10 @@ repositories {
 }
 
 dependencies {
-    compile 'com.mohistmc:MiraiMBot:0.4-SNAPSHOT'
-    annotationProcessor 'com.mohistmc:MiraiMBot:0.4-SNAPSHOT'
+    compile 'com.mohistmc.miraimbot:core:0.4.1'
+    compile 'com.mohistmc.miraimbot:annotations:0.4.1'
+    annotationProcessor 'com.mohistmc.miraimbot:compiler:0.4.1'
 }
-
 task unzip(type: Copy) {
     def zipFile = file('build/libs/' + project.name + '-' + project.version + '.jar')
     def outputDir = file("build/repack")
