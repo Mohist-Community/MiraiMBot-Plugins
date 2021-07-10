@@ -12,6 +12,7 @@ version '0.2'
 repositories {
     mavenCentral()
     maven { url 'https://maven.mohistmc.com/' }
+    maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
 }
 
 dependencies {

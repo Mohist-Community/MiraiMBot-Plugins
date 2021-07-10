@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mohistmc.miraimbot.MiraiMBot;
-import com.mohistmc.miraimbot.console.log4j.MiraiMBotLog;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,7 +19,7 @@ public class JenkinsUpdatePush implements Runnable {
 
     static {
         ver.add("1.12.2");
-        ver.add("1.16.4");
+        ver.add("1.16.5");
         ver.add("1.7.10");
     }
 
@@ -28,7 +27,7 @@ public class JenkinsUpdatePush implements Runnable {
     public void run() {
         for (String s : ver) {
             try {
-                URLConnection request = new URL("https://ci.codemc.io/job/Mohist-Community/job/Mohist-" + s + "/lastSuccessfulBuild/api/json").openConnection();
+                URLConnection request = new URL("https://ci.codemc.io/job/MohistMC/job/Mohist-" + s + "/lastSuccessfulBuild/api/json").openConnection();
                 request.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
                 request.connect();
                 JsonElement json = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent()));
@@ -47,11 +46,11 @@ public class JenkinsUpdatePush implements Runnable {
 
                 String ymlver = s.replace(".", "-");
                 // 没有缓存时写入
-                if(MiraiMBot.yaml.get("mohist_number." + ymlver) == null) {
-                    MiraiMBot.yaml.set("mohist_number." + ymlver, number);
-                    MiraiMBot.saveYaml(MiraiMBot.yaml, MiraiMBot.file);
+                if(Main.plugin.getConfig().get("mohist_number." + ymlver) == null) {
+                    Main.plugin.getConfig().set("mohist_number." + ymlver, number);
+                    Main.plugin.saveConfig();
                 }
-                if (MiraiMBot.yaml.getInt("mohist_number." + ymlver) < number) {
+                if (Main.plugin.getConfig().getInt("mohist_number." + ymlver) < number) {
                     String sendMsg = "======Mohist更新推送======" + "\n" +
                             "分支: #branche#" + "\n" +
                             "构建号: #number#" + "\n" +
@@ -65,19 +64,19 @@ public class JenkinsUpdatePush implements Runnable {
                             .replace("#time#", time)
                             .replace("#author#", author)
                             .replace("#msg#", message0);
-                    Main.plugin.sendGroupMessage(793311898L, sendMsg);
-                    Main.plugin.sendGroupMessage(782534813L, sendMsg);
-                    MiraiMBot.yaml.set("mohist_number." + ymlver, number);
-                    MiraiMBot.saveYaml(MiraiMBot.yaml, MiraiMBot.file);
+                    MiraiMBot.instance.getBot().getGroup(793311898L).sendMessage(sendMsg);
+                    MiraiMBot.instance.getBot().getGroup(782534813L).sendMessage(sendMsg);
+                    Main.plugin.getConfig().set("mohist_number." + ymlver, number);
+                    Main.plugin.saveConfig();
                 }
             } catch (IOException e) {
-                MiraiMBotLog.LOGGER.info("更新检测程序发生错误: " + e.getMessage());
+                Main.plugin.getLogger().info("更新检测程序发生错误: " + e.getMessage());
             }
         }
     }
 
     public static void start() {
-        MiraiMBotLog.LOGGER.info("开始运行更新推送程序");
+        Main.plugin.getLogger().info("开始运行更新推送程序");
         Main.Jenkins_UpdatePush.scheduleAtFixedRate(new JenkinsUpdatePush(), 1000 * 1, 1000 * 90, TimeUnit.MILLISECONDS);
     }
 

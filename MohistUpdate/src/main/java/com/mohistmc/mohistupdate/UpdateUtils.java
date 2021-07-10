@@ -3,7 +3,6 @@ package com.mohistmc.mohistupdate;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.mohistmc.miraimbot.console.log4j.MiraiMBotLog;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,18 +18,18 @@ public class UpdateUtils {
 
     public static void main(String[] a){
         try {
-            MiraiMBotLog.LOGGER.info(info("1.16.4"));
+            System.out.println(info("1.16.5"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static String info(String msg) throws IOException {
-        MiraiMBotLog.LOGGER.info("开始读取CI数据");
-        URLConnection request = new URL("https://ci.codemc.io/job/Mohist-Community/job/Mohist-" + msg + "/lastSuccessfulBuild/api/json").openConnection();
+        System.out.println("开始读取CI数据-来自命令");
+        URLConnection request = new URL("https://ci.codemc.io/job/MohistMC/job/Mohist-" + msg + "/lastSuccessfulBuild/api/json").openConnection();
         request.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
         request.connect();
-        MiraiMBotLog.LOGGER.info(((HttpURLConnection) request).getResponseCode());
+        System.out.println(((HttpURLConnection) request).getResponseCode());
         JsonElement json = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent()));
         String number = json.getAsJsonObject().get("number").toString();
 

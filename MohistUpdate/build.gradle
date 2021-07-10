@@ -1,21 +1,37 @@
 plugins {
     id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.20-RC' // 请确保添加 Kotlin，至少使用 1.5 版本
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'com.mohistmc.mohistupdate'
+version '0.2'
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 repositories {
-    mavenCentral()
+    maven { url 'https://maven.mohistmc.com/' }
+    maven { url 'https://maven.aliyun.com/repository/public/' }
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-
-    compile files('libs/MiraiMBot-0.1.0-all.jar')
+    compile 'com.mohistmc.miraimbot:core:0.4.1'
+    compile 'com.mohistmc.miraimbot:annotations:0.4.1'
+    annotationProcessor 'com.mohistmc.miraimbot:compiler:0.4.1'
 }
 
-test {
-    useJUnitPlatform()
+task unzip(type: Copy) {
+    def zipFile = file('build/libs/' + project.name + '-' + project.version + '.jar')
+    def outputDir = file("build/repack")
+    FileTree jarTree = zipTree(zipFile)
+    from jarTree
+    into outputDir
 }
+
+task pack(type: Zip) {
+    from 'build/repack'
+    archiveName project.name + '-' + project.version + '.jar'
+}
+
+compileJava.dependsOn clean
+build.dependsOn pack
+pack.dependsOn unzip
